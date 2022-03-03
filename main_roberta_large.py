@@ -42,12 +42,10 @@ class PLMEncoder(nn.Module):
         self.encoder = RobertaModel.from_pretrained('roberta-large')
 
     def forward(self, input_ids, attention_mask):
-        # Debug: last_hidden_state应该是我们想要的输入
         out = self.encoder(input_ids, attention_mask)
         return out.last_hidden_state
 
 
-# Debug: 设定为Batch是第二个dimension
 # query: :math:`(L, N, E)` where L is the target sequence length, N is the batch size, E is
 #           the embedding dimension.
 class CoreMatchingModel(nn.Module):
@@ -56,8 +54,6 @@ class CoreMatchingModel(nn.Module):
 
         # Attention layers
         self.batch_size = batch_size
-        # Debug: source code里面 -> self.head_dim = embed_dim // num_heads
-        # Debug: 修改这两个参数 -> 尤其是num_heads (目前等于1)
         self.cross_attn_cand = nn.MultiheadAttention(embed_dim, num_heads)  
         self.cross_attn_query = nn.MultiheadAttention(embed_dim, num_heads)
         self.self_attn_cand = nn.MultiheadAttention(embed_dim, num_heads)
